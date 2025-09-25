@@ -21,11 +21,11 @@ function Show-Banner {
 
 function Show-Quote {
     $quotes = @(
-        "Installing like a ninja 🥷...",
-        "Hacking the mainframe... just kidding 😅",
-        "This script is cooler than your ex 💅",
-        "Running silently... like your crush ignoring you 👻",
-        "If this breaks, blame the raccoons 🦝"
+        "Guess what, chicken butt!",
+        "Evann has a long ass nose, good GOD",
+        "dude, what the fuck!!!!!!",
+        "deadly but silent, liek a fart XDDDDD",
+        "If this breaks, blame the raccoons XDDDDDDD"
     )
     $quote = Get-Random -InputObject $quotes
     Write-Host "`n$quote" -ForegroundColor Yellow
